@@ -11,13 +11,11 @@
       text-align: center;
       padding: 20px;
     }
-
     .question {
       margin: 20px 0;
     }
-
     button {
-      margin: 5px;
+      margin: 10px;
       padding: 10px 20px;
       border: none;
       background-color: #ffb6c1;
@@ -26,11 +24,12 @@
       border-radius: 8px;
       cursor: pointer;
     }
-
+    .selected {
+      background-color: #ff69b4;
+    }
     #result {
       margin-top: 30px;
     }
-
     img {
       width: 300px;
       max-width: 90%;
@@ -39,60 +38,42 @@
   </style>
 </head>
 <body>
-
   <h1>Che personaggio sei di KawaiiYamiShop?</h1>
 
-  <div id="quiz">
-    <div class="question">
-      <p>Preferisci leggere un libro vicino a una candela o andare a una festa affollata?</p>
-      <button onclick="answer('Tomoe')">Leggere un libro</button>
-      <button onclick="answer('Dodo')">Andare a una festa</button>
-    </div>
-
-    <div class="question">
-      <p>Ti piacciono di più i fiori o le stelle?</p>
-      <button onclick="answer('Yume')">Fiori</button>
-      <button onclick="answer('Anya')">Stelle</button>
-    </div>
-
-    <div class="question">
-      <p>Come ti descriveresti?</p>
-      <button onclick="answer('Kitsu')">Curiosa e brillante</button>
-      <button onclick="answer('Miyun')">Sensibile e tranquilla</button>
-    </div>
-
-    <div class="question">
-      <p>Preferisci stare sola a riflettere o chiacchierare con chi ami?</p>
-      <button onclick="answer('Iaia')">Sola a riflettere</button>
-      <button onclick="answer('Kurob')">Chiacchierare</button>
-    </div>
-
-    <button onclick="showResult()">Scopri il tuo personaggio!</button>
-  </div>
-
+  <div id="quiz"></div>
   <div id="result"></div>
 
   <script>
-  <script>
-  const answers = {};
-
-  function answer(character) {
-    answers[character] = (answers[character] || 0) + 1;
-  }
-
-  function showResult() {
-    const resultDiv = document.getElementById('result');
-    const quizDiv = document.getElementById('quiz');
-    quizDiv.style.display = 'none';
-
-    let max = 0;
-    let character = '';
-    for (const [key, value] of Object.entries(answers)) {
-      if (value > max) {
-        max = value;
-        character = key;
+    const questions = [
+      {
+        text: "Preferisci leggere un libro vicino a una candela o andare a una festa affollata?",
+        options: [
+          { label: "Leggere un libro", character: "Tomoe" },
+          { label: "Andare a una festa", character: "Dodo" }
+        ]
+      },
+      {
+        text: "Ti piacciono di più i fiori o le stelle?",
+        options: [
+          { label: "Fiori", character: "Yume" },
+          { label: "Stelle", character: "Anya" }
+        ]
+      },
+      {
+        text: "Come ti descriveresti?",
+        options: [
+          { label: "Curiosa e brillante", character: "Kitsu" },
+          { label: "Sensibile e tranquilla", character: "Miyun" }
+        ]
+      },
+      {
+        text: "Preferisci stare sola a riflettere o chiacchierare con chi ami?",
+        options: [
+          { label: "Sola a riflettere", character: "Iaia" },
+          { label: "Chiacchierare", character: "Kurob" }
+        ]
       }
-    }
+    ];
 
     const descriptions = {
       'Tomoe': {
@@ -133,21 +114,64 @@
       }
     };
 
-    if (!character || !descriptions[character]) {
-      resultDiv.innerHTML = "<p>Non hai risposto a nessuna domanda! Ricarica la pagina e riprova ♥</p>";
-      return;
+    let currentQuestion = 0;
+    const answers = {};
+
+    function showQuestion() {
+      const quiz = document.getElementById('quiz');
+      quiz.innerHTML = '';
+
+      if (currentQuestion >= questions.length) {
+        showResult();
+        return;
+      }
+
+      const q = questions[currentQuestion];
+      const questionDiv = document.createElement('div');
+      questionDiv.className = 'question';
+
+      const questionText = document.createElement('p');
+      questionText.textContent = q.text;
+      questionDiv.appendChild(questionText);
+
+      q.options.forEach(option => {
+        const btn = document.createElement('button');
+        btn.textContent = option.label;
+        btn.onclick = () => {
+          answers[option.character] = (answers[option.character] || 0) + 1;
+          currentQuestion++;
+          showQuestion();
+        };
+        questionDiv.appendChild(btn);
+      });
+
+      quiz.appendChild(questionDiv);
     }
 
-    const selected = descriptions[character];
-    resultDiv.innerHTML = `
-      <h2>Il tuo personaggio è ${character}!</h2>
-      <img src="${selected.img}" alt="${character}" />
-      <p>${selected.text}</p>
-    `;
-  }
-</script>
+    function showResult() {
+      const quiz = document.getElementById('quiz');
+      const resultDiv = document.getElementById('result');
+      quiz.style.display = 'none';
 
+      let max = 0;
+      let character = '';
+      for (const [key, value] of Object.entries(answers)) {
+        if (value > max) {
+          max = value;
+          character = key;
+        }
+      }
+
+      const selected = descriptions[character];
+      resultDiv.innerHTML = `
+        <h2>Il tuo personaggio è ${character}!</h2>
+        <img src="${selected.img}" alt="${character}" />
+        <p>${selected.text}</p>
+        <br><button onclick="location.reload()">🔁 Ricomincia il quiz</button>
+      `;
+    }
+
+    showQuestion();
   </script>
-
 </body>
 </html>
