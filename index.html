@@ -11,9 +11,11 @@
       text-align: center;
       padding: 20px;
     }
+
     .question {
       margin: 20px 0;
     }
+
     button {
       margin: 5px;
       padding: 10px 20px;
@@ -24,9 +26,11 @@
       border-radius: 8px;
       cursor: pointer;
     }
+
     #result {
       margin-top: 30px;
     }
+
     img {
       width: 300px;
       max-width: 90%;
@@ -36,105 +40,111 @@
 </head>
 <body>
 
-<h1>Che personaggio sei di KawaiiYamiShop?</h1>
+  <h1>Che personaggio sei di KawaiiYamiShop?</h1>
 
-<div id="quiz">
-  <div class="question">
-    <p>Preferisci leggere un libro vicino a una candela o andare a una festa affollata?</p>
-    <button onclick="answer('Tomoe')">Leggere un libro</button>
-    <button onclick="answer('Kurob')">Andare a una festa</button>
+  <div id="quiz">
+    <div class="question">
+      <p>Preferisci leggere un libro vicino a una candela o andare a una festa affollata?</p>
+      <button onclick="answer('Tomoe')">Leggere un libro</button>
+      <button onclick="answer('Dodo')">Andare a una festa</button>
+    </div>
+
+    <div class="question">
+      <p>Ti piacciono di più i fiori o le stelle?</p>
+      <button onclick="answer('Yume')">Fiori</button>
+      <button onclick="answer('Anya')">Stelle</button>
+    </div>
+
+    <div class="question">
+      <p>Come ti descriveresti?</p>
+      <button onclick="answer('Kitsu')">Curiosa e brillante</button>
+      <button onclick="answer('Miyun')">Sensibile e tranquilla</button>
+    </div>
+
+    <div class="question">
+      <p>Preferisci stare sola a riflettere o chiacchierare con chi ami?</p>
+      <button onclick="answer('Iaia')">Sola a riflettere</button>
+      <button onclick="answer('Kurob')">Chiacchierare</button>
+    </div>
+
+    <button onclick="showResult()">Scopri il tuo personaggio!</button>
   </div>
-  <div class="question">
-    <p>Ti piacciono di più i fiori o le stelle?</p>
-    <button onclick="answer('Yume')">Fiori</button>
-    <button onclick="answer('Miyon')">Stelle</button>
-  </div>
-  <div class="question">
-    <p>Come ti descriveresti?</p>
-    <button onclick="answer('Kitsu')">Curiosa e brillante</button>
-    <button onclick="answer('Miyun')">Sensibile e tranquilla</button>
-  </div>
-  <div class="question">
-    <p>Preferisci stare sola a riflettere o chiacchierare con chi ami?</p>
-    <button onclick="answer('Iaia')">Sola a riflettere</button>
-    <button onclick="answer('Dodo')">Chiacchierare</button>
-  </div>
-  <button onclick="showResult()">Scopri il tuo personaggio!</button>
-</div>
 
-<div id="result"></div>
-<button onclick="restartQuiz()" id="restartBtn" style="display:none;">🔁 Ricomincia il quiz</button>
+  <div id="result"></div>
 
-<script>
-  const answers = {};
+  <script>
+    const answers = {};
 
-  function answer(character) {
-    answers[character] = (answers[character] || 0) + 1;
-  }
-
-  function showResult() {
-    const resultDiv = document.getElementById('result');
-    const quizDiv = document.getElementById('quiz');
-    quizDiv.style.display = 'none';
-
-    let max = 0;
-    let character = '';
-    for (const [key, value] of Object.entries(answers)) {
-      if (value > max) {
-        max = value;
-        character = key;
-      }
+    function answer(character) {
+      answers[character] = (answers[character] || 0) + 1;
     }
 
-    const descriptions = {
-      'Tomoe': {
-        img: 'immagine/tomoe.jpg',
-        text: 'Tomoe è la gufetta saggia e gentile. Ama i misteri e il silenzio della notte. Frase guida: "Non devi avere tutte le risposte, solo un posto sicuro dove iniziare a cercarle."'
-      },
-      'Yume': {
-        img: 'immagine/yume.jpg',
-        text: 'Yume è una cerbiatta empatica e sognatrice. Frase guida: "La dolcezza è una forma di coraggio".'
-      },
-      'Kitsu': {
-        img: 'immagine/kitsu.jpg',
-        text: 'Kitsu è una volpe brillante e furba, ama la tecnologia. Frase guida: "La curiosità è il mio superpotere!"'
-      },
-      'Miyon': {
-        img: 'immagine/miyon.jpg',
-        text: 'Miyon è una gattina nera misteriosa. Frase guida: "Non devi essere luminosa per brillare".'
-      },
-      'Miyun': {
-        img: 'immagine/miyun.jpg',
-        text: 'Miyun è una gattina bianca timida e sensibile. Frase guida: "Anche le anime tranquille brillano, solo in silenzio."'
-      },
-      'Iaia': {
-        img: 'immagine/iaia.jpg',
-        text: 'Iaia è un gatto siamese metà rosa e metà nero. Intuitiva, misteriosa, riflessiva. Frase guida: "Le cose preziose non fanno rumore."'
-      },
-      'Dodo': {
-        img: 'immagine/dodo.jpg',
-        text: 'Dodo è uno scoiattolino rosa gioioso e affettuoso. Frase guida: "La gioia è contagiosa, spargila ovunque!"'
-      },
-      'Kurob': {
-        img: 'immagine/kurob.jpg',
-        text: 'Kurob è un panda punk, ribelle ma tenero. Frase guida: "Anche chi graffia, può proteggere."'
+    function showResult() {
+      const resultDiv = document.getElementById('result');
+      const quizDiv = document.getElementById('quiz');
+      quizDiv.style.display = 'none';
+
+      let max = 0;
+      let character = '';
+      for (const [key, value] of Object.entries(answers)) {
+        if (value > max) {
+          max = value;
+          character = key;
+        }
       }
-    };
 
-    const selected = descriptions[character];
-    resultDiv.innerHTML = `
-      <h2>Il tuo personaggio è ${character}!</h2>
-      <img src="${selected.img}" alt="${character}" />
-      <p>${selected.text}</p>
-    `;
+      const descriptions = {
+        'Tomoe': {
+          img: './immagine/tomoe.jpg',
+          text: 'Tomoe è la gufetta saggia e gentile. Ama i misteri e il silenzio della notte. Frase guida: "Non devi avere tutte le risposte, solo un posto sicuro dove iniziare a cercarle."'
+        },
+        'Yume': {
+          img: './immagine/yume.jpg',
+          text: 'Yume è una cerbiatta empatica e sognatrice. Frase guida: "La dolcezza è una forma di coraggio".'
+        },
+        'Kitsu': {
+          img: './immagine/kitsu.jpg',
+          text: 'Kitsu è una volpe brillante e furba, ama la tecnologia. Frase guida: "La curiosità è il mio superpotere!"'
+        },
+        'Miyon': {
+          img: './immagine/miyon.jpg',
+          text: 'Miyon è una gattina nera misteriosa. Frase guida: "Non devi essere luminosa per brillare".'
+        },
+        'Miyun': {
+          img: './immagine/miyun.jpg',
+          text: 'Miyun è una gattina bianca timida e sensibile. Frase guida: "Anche le anime tranquille brillano, solo in silenzio."'
+        },
+        'Iaia': {
+          img: './immagine/iaia.jpg',
+          text: 'Iaia è un gatto siamese metà rosa e metà nero. Intuitiva, misteriosa, riflessiva. Frase guida: "Le cose preziose non fanno rumore."'
+        },
+        'Dodo': {
+          img: './immagine/dodo.jpg',
+          text: 'Dodo è uno scoiattolino rosa gioioso e affettuoso. Frase guida: "La gioia è contagiosa, spargila ovunque!"'
+        },
+        'Kurob': {
+          img: './immagine/kurob.jpg',
+          text: 'Kurob è un panda punk, ribelle ma tenero. Frase guida: "Anche chi graffia, può proteggere."'
+        },
+        'Anya': {
+          img: './immagine/anya.jpg',
+          text: 'Anya è l’unicorno gotico e sensibile. Frase guida: "Diversa non significa sbagliata."'
+        }
+      };
 
-    document.getElementById('restartBtn').style.display = 'inline-block';
-  }
+      if (!character || !descriptions[character]) {
+        resultDiv.innerHTML = "<p>Non hai risposto a nessuna domanda! Ricarica la pagina e riprova ♥</p>";
+        return;
+      }
 
-  function restartQuiz() {
-    location.reload(); // ricarica la pagina
-  }
-</script>
+      const selected = descriptions[character];
+      resultDiv.innerHTML = `
+        <h2>Il tuo personaggio è ${character}!</h2>
+        <img src="${selected.img}" alt="${character}" />
+        <p>${selected.text}</p>
+      `;
+    }
+  </script>
 
 </body>
 </html>
