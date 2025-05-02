@@ -3,74 +3,93 @@
 <head>
   <meta charset="UTF-8">
   <title>Che personaggio sei di KawaiiYamiShop?</title>
+  <link href="https://fonts.googleapis.com/css2?family=Gochi+Hand&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: 'Comic Sans MS', cursive;
+      font-family: 'Gochi Hand', cursive;
       background-color: #fff0f5;
       color: #333;
       text-align: center;
       padding: 20px;
     }
+
     .question {
-      margin: 20px 0;
+      margin: 30px auto;
+      padding: 20px;
+      max-width: 600px;
+      animation: fadeIn 1s ease-in-out;
     }
+
     button {
       margin: 10px;
-      padding: 10px 20px;
+      padding: 12px 24px;
       border: none;
       background-color: #ffb6c1;
       color: #000;
       font-weight: bold;
-      border-radius: 8px;
+      border-radius: 10px;
       cursor: pointer;
+      transition: all 0.2s ease;
     }
-    .selected {
-      background-color: #ff69b4;
+
+    button:hover {
+      background-color: #ff91af;
     }
+
     #result {
-      margin-top: 30px;
+      margin-top: 40px;
     }
+
     img {
       width: 300px;
       max-width: 90%;
-      border-radius: 15px;
+      border-radius: 20px;
+      margin-top: 20px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
 <body>
-  <h1>Che personaggio sei di KawaiiYamiShop?</h1>
+
+  <h1>🌙 Che personaggio sei di KawaiiYamiShop? 🦇</h1>
+  <p>In un mondo pieno di dolcezze e misteri... quale anima vive nel tuo cuore?</p>
 
   <div id="quiz"></div>
   <div id="result"></div>
+  <button onclick="restartQuiz()" id="restartBtn" style="display:none;">🔁 Ricomincia il quiz</button>
 
   <script>
     const questions = [
       {
-        text: "Preferisci leggere un libro vicino a una candela o andare a una festa affollata?",
+        text: "📚 Preferisci leggere un libro vicino a una candela o 🥳 andare a una festa affollata?",
         options: [
-          { label: "Leggere un libro", character: "Tomoe" },
-          { label: "Andare a una festa", character: "Dodo" }
+          { text: "📖 Leggere un libro", value: "Tomoe" },
+          { text: "🎉 Andare a una festa", value: "Dodo" }
         ]
       },
       {
-        text: "Ti piacciono di più i fiori o le stelle?",
+        text: "🌸 Ti piacciono di più i fiori o 🌌 le stelle?",
         options: [
-          { label: "Fiori", character: "Yume" },
-          { label: "Stelle", character: "Anya" }
+          { text: "🌷 Fiori", value: "Yume" },
+          { text: "✨ Stelle", value: "Anya" }
         ]
       },
       {
-        text: "Come ti descriveresti?",
+        text: "🔍 Come ti descriveresti?",
         options: [
-          { label: "Curiosa e brillante", character: "Kitsu" },
-          { label: "Sensibile e tranquilla", character: "Miyun" }
+          { text: "🧠 Curiosa e brillante", value: "Kitsu" },
+          { text: "💖 Sensibile e tranquilla", value: "Miyun" }
         ]
       },
       {
-        text: "Preferisci stare sola a riflettere o chiacchierare con chi ami?",
+        text: "🧘‍♀️ Preferisci stare sola a riflettere o 💬 chiacchierare con chi ami?",
         options: [
-          { label: "Sola a riflettere", character: "Iaia" },
-          { label: "Chiacchierare", character: "Kurob" }
+          { text: "🌙 Sola a riflettere", value: "Iaia" },
+          { text: "🎀 Chiacchierare", value: "Kurob" }
         ]
       }
     ];
@@ -118,40 +137,37 @@
     const answers = {};
 
     function showQuestion() {
-      const quiz = document.getElementById('quiz');
-      quiz.innerHTML = '';
+      const quizDiv = document.getElementById('quiz');
+      quizDiv.innerHTML = '';
 
-      if (currentQuestion >= questions.length) {
+      if (currentQuestion < questions.length) {
+        const q = questions[currentQuestion];
+        const qDiv = document.createElement('div');
+        qDiv.className = 'question';
+        qDiv.innerHTML = `<p>${q.text}</p>`;
+
+        q.options.forEach(opt => {
+          const btn = document.createElement('button');
+          btn.innerText = opt.text;
+          btn.onclick = () => {
+            answers[opt.value] = (answers[opt.value] || 0) + 1;
+            currentQuestion++;
+            showQuestion();
+          };
+          qDiv.appendChild(btn);
+        });
+
+        quizDiv.appendChild(qDiv);
+      } else {
         showResult();
-        return;
       }
-
-      const q = questions[currentQuestion];
-      const questionDiv = document.createElement('div');
-      questionDiv.className = 'question';
-
-      const questionText = document.createElement('p');
-      questionText.textContent = q.text;
-      questionDiv.appendChild(questionText);
-
-      q.options.forEach(option => {
-        const btn = document.createElement('button');
-        btn.textContent = option.label;
-        btn.onclick = () => {
-          answers[option.character] = (answers[option.character] || 0) + 1;
-          currentQuestion++;
-          showQuestion();
-        };
-        questionDiv.appendChild(btn);
-      });
-
-      quiz.appendChild(questionDiv);
     }
 
     function showResult() {
-      const quiz = document.getElementById('quiz');
+      const quizDiv = document.getElementById('quiz');
+      quizDiv.style.display = 'none';
+
       const resultDiv = document.getElementById('result');
-      quiz.style.display = 'none';
 
       let max = 0;
       let character = '';
@@ -164,16 +180,21 @@
 
       const selected = descriptions[character];
       resultDiv.innerHTML = `
-        <h2>Il tuo personaggio è ${character}!</h2>
+        <h2>🌟 Il tuo personaggio è ${character}! 🌟</h2>
         <img src="${selected.img}" alt="${character}" />
         <p>${selected.text}</p>
-        <br><button onclick="location.reload()">🔁 Ricomincia il quiz</button>
       `;
+
+      document.getElementById('restartBtn').style.display = 'inline-block';
     }
 
-    showQuestion();
+    function restartQuiz() {
+      location.reload();
+    }
+
+    window.onload = showQuestion;
   </script>
+
 </body>
 </html>
 
-Sostituito index.html con quiz a domande singole
